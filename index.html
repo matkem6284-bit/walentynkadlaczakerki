@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Walentynka 💖</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ffb6c1, #ffd1dc);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+/* ================= LIST / KOPERTA ================= */
+#envelopeScreen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #ffb6c1, #ffd1dc);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 1.2s ease forwards;
+    z-index: 100;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.envelope {
+    width: 260px;
+    height: 180px;
+    background: #fff;
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.envelope::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #ffd1dc;
+    clip-path: polygon(0 0, 100% 0, 50% 55%);
+    transition: transform 0.8s ease;
+    transform-origin: top;
+}
+
+.envelope.open::before {
+    transform: rotateX(180deg);
+}
+
+.envelope p {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    font-weight: bold;
+    color: #e60073;
+}
+
+/* ================= GŁÓWNA STRONA ================= */
+#main {
+    display: none;
+}
+
+#box {
+    background: rgba(255,255,255,0.95);
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 90%;
+    z-index: 10;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(6px); }
+    50% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+    100% { transform: translateX(0); }
+}
+.shake { animation: shake 0.4s; }
+
+h1 { color: #e60073; }
+
+#messages {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #c4005a;
+}
+
+button {
+    padding: 15px 25px;
+    font-size: 18px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+}
+
+#yes { background: #ff4da6; color: white; }
+#no { background: #ccc; }
+
+.photos img {
+    width: 80px;
+    border-radius: 15px;
+    margin: 5px;
+}
+
+/* SERDUSZKA */
+.heart {
+    position: fixed;
+    bottom: -20px;
+    font-size: 26px;
+    animation: heartUp 6s linear forwards;
+    pointer-events: none;
+}
+@keyframes heartUp {
+    to { transform: translateY(-110vh); opacity: 0; }
+}
+
+/* PŁACZ */
+.cry {
+    position: fixed;
+    top: -30px;
+    font-size: 30px;
+    animation: cryDown 4s linear forwards;
+    pointer-events: none;
+}
+@keyframes cryDown {
+    to { transform: translateY(110vh); opacity: 0; }
+}
+
+/* CONFETTI */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 16px;
+    animation: confettiMove 1.8s ease-in-out forwards;
+    pointer-events: none;
+    z-index: 5;
+}
+@keyframes confettiMove {
+    0% { transform: translate(0,0); }
+    50% { transform: translate(var(--mx), var(--my)); }
+    100% { transform: translate(0,0); opacity: 0; }
+}
+
+#final {
+    display: none;
+    font-size: 24px;
+    color: #e60073;
+}
+
+.bigHeart {
+    font-size: 80px;
+    animation: pulse 1s infinite;
+}
+@keyframes pulse {
+    50% { transform: scale(1.2); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎵 MUZYKA -->
+<audio id="music" src="pakapaka.mp3" loop ></audio>
+
+<!-- LIST -->
+<div id="envelopeScreen">
+    <div class="envelope" id="envelope">
+        <p>Do najlepszej dziewczyny<br>na świecie 💌</p>
+    </div>
+</div>
+
+<!-- WALENTYNKA -->
+<div id="main">
+<div id="box">
+    <h1 id="title">Czy zostaniesz moją walentynką Paulina? 💖</h1>
+
+    <div class="photos">
+        <img src="1paka1.jfif">
+        <img src="2paka2.jfif">
+        <img src="3paka3.jfif">
+    </div>
+
+    <div id="messages"></div>
+
+    <div id="buttons">
+        <button id="yes">TAK</button>
+        <button id="no">NIE</button>
+    </div>
+
+    <div id="final">
+        <p>Wiedziałem że się zgodzisz, kocham ciee💝</p>
+        <div class="bigHeart">❤️<br>P + M</div>
+    </div>
+</div>
+</div>
+
+<script>
+/* LIST + MUZYKA */
+const envelope = document.getElementById("envelope");
+const envelopeScreen = document.getElementById("envelopeScreen");
+const main = document.getElementById("main");
+const music = document.getElementById("music");
+
+envelope.onclick = () => {
+    music.play(); // <<< MUZYKA STARTUJE TU
+    envelope.classList.add("open");
+    setTimeout(() => {
+        envelopeScreen.style.display = "none";
+        main.style.display = "block";
+    }, 800);
+};
+
+/* SERDUSZKA */
+setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "💗";
+    h.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 6000);
+}, 300);
+
+/* LOGIKA */
+const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
+const messages = document.getElementById("messages");
+const final = document.getElementById("final");
+const buttons = document.getElementById("buttons");
+const box = document.getElementById("box");
+const title = document.getElementById("title");
+
+const texts = [
+    "będzie mi bardzo smutno 😢",
+	"NO ZGÓDŹ SIĘ🤬🤬",
+	"czemu dalej klikasz NIE😩😩",
+	"serce mi pęka 💔",
+	"no proszę...", 
+	"NO ZGÓDŹ SIĘ NO🤦‍♂️🤦‍♂️",
+	"bo zostane gejem🧑‍🤝‍🧑🧑‍🤝‍🧑", 
+	"NO PAULINAAAA🤯🤯",
+	"czemu dalej klikasz NIE🤐🤐",
+	"zgódź się proszę kocham cię bardzo💘💘",
+	"NO PAKA CO TY ROBISZ🫤🫤", 
+	"SŁUCHAJ KLIKNIJ TEN DRUGI PRZYCISK😡😡",
+	"no proszę no...😟😟",
+	"długo będziesz tak klikała w nie?🤨🤨",
+	"kotku no zgódź się proszeeeee😿😿"
+];
+
+let textIndex = 0;
+let yesSize = 18;
+
+function cryRain() {
+    for (let i = 0; i < 25; i++) {
+        const c = document.createElement("div");
+        c.className = "cry";
+        c.innerHTML = "😭";
+        c.style.left = Math.random() * 100 + "vw";
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 4000);
+    }
+}
+
+function confettiBars() {
+    const cx = innerWidth / 2;
+    const cy = innerHeight / 2;
+
+    for (let y = 0; y < innerHeight; y += 30) {
+        spawn(-20, y, cx, cy - y);
+        spawn(innerWidth + 20, y, -cx, cy - y);
+    }
+    for (let x = 0; x < innerWidth; x += 30) {
+        spawn(x, -20, cx - x, cy);
+        spawn(x, innerHeight + 20, cx - x, -cy);
+    }
+}
+
+function spawn(x,y,mx,my){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=x+"px";
+    c.style.top=y+"px";
+    c.style.backgroundColor=`hsl(${Math.random()*360},100%,50%)`;
+    c.style.setProperty("--mx",mx+"px");
+    c.style.setProperty("--my",my+"px");
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),1800);
+}
+
+noBtn.onclick = () => {
+    cryRain();
+    box.classList.add("shake");
+    setTimeout(()=>box.classList.remove("shake"),400);
+
+    messages.innerHTML = texts[textIndex % texts.length];
+    textIndex++;
+
+    yesSize += 25;
+    yesBtn.style.fontSize = yesSize + "px";
+
+    noBtn.style.position="fixed";
+    noBtn.style.left=Math.random()*(innerWidth-120)+"px";
+    noBtn.style.top=Math.random()*(innerHeight-60)+"px";
+};
+
+yesBtn.onclick = () => {
+    title.innerHTML = "YUUUUUPII 💋💋💋";
+    buttons.style.display="none";
+    messages.style.display="none";
+    final.style.display="block";
+    confettiBars();
+    setTimeout(confettiBars,350);
+};
+</script>
+
+</body>
+</html>
